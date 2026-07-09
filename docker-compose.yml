@@ -1,0 +1,39 @@
+services:
+  znuny:
+    # Por defecto construye la imagen localmente. Para usar una imagen ya publicada
+    # en Docker Hub, define ZNUNY_IMAGE en .env (p.ej. ZNUNY_IMAGE=tuusuario/znuny:7.3.4)
+    # y arranca sin --build (docker compose pull && docker compose up -d).
+    image: ${ZNUNY_IMAGE:-znuny-local:7.3.4}
+    build:
+      context: ./build
+      dockerfile: Dockerfile
+    container_name: znuny
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - znuny_data:/opt/znuny
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: znuny-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${ZNUNY_DB_NAME}
+      POSTGRES_USER: ${ZNUNY_DB_USER}
+      POSTGRES_PASSWORD: ${ZNUNY_DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${ZNUNY_DB_USER} -d ${ZNUNY_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  znuny_data:
+  postgres_data:

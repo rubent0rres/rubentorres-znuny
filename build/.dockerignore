@@ -1,0 +1,2 @@
+# El tarball se descarga durante el build (ver Dockerfile); no hace falta en el contexto.
+znuny-*.tar.gz

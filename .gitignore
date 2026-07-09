@@ -1,0 +1,12 @@
+# Secretos y config local
+.env
+
+# Config personal de Claude Code (permisos locales de esta máquina)
+.claude/settings.local.json
+
+# Código fuente de Znuny (grande; se descarga del sitio oficial)
+build/znuny-*.tar.gz
+
+# Restos de instalaciones anteriores basadas en bind-mounts
+volumes/
+backups/
